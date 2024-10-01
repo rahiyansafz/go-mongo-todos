@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package todo;
+
+option go_package = "github.com/rahiyansafz/go-mongo-todos/pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service TodoService {
+  rpc CreateTodo(CreateTodoRequest) returns (Todo);
+  rpc GetTodo(GetTodoRequest) returns (Todo);
+  rpc ListTodos(ListTodosRequest) returns (ListTodosResponse);
+  rpc UpdateTodo(UpdateTodoRequest) returns (Todo);
+  rpc DeleteTodo(DeleteTodoRequest) returns (google.protobuf.Empty);
+  rpc SearchTodos(SearchTodosRequest) returns (ListTodosResponse);
+}
+
+message Todo {
+  string id = 1;
+  string title = 2;
+  bool completed = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message CreateTodoRequest {
+  string title = 1;
+  bool completed = 2;
+}
+
+message GetTodoRequest {
+  string id = 1;
+}
+
+message ListTodosRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message ListTodosResponse {
+  repeated Todo todos = 1;
+}
+
+message UpdateTodoRequest {
+  string id = 1;
+  string title = 2;
+  bool completed = 3;
+}
+
+message DeleteTodoRequest {
+  string id = 1;
+}
+
+message SearchTodosRequest {
+  string query = 1;
+}

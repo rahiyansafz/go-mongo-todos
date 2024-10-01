@@ -12,7 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var collection *mongo.Collection
+var client *mongo.Client
+var todoCollection *mongo.Collection
 
 func Connect() error {
 	uri := os.Getenv("MONGO_URI")
@@ -34,7 +35,8 @@ func Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, clientOptions)
+	var err error
+	client, err = mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		return fmt.Errorf("failed to connect to MongoDB: %v", err)
 	}
@@ -46,12 +48,23 @@ func Connect() error {
 
 	log.Println("Connected to MongoDB successfully")
 
-	collection = client.Database("todos").Collection("todos")
+	todoCollection = client.Database("todos").Collection("todos")
 	log.Println("Collection 'todos' in database 'todos' is ready")
 
 	return nil
 }
 
 func GetCollection() *mongo.Collection {
-	return collection
+	return todoCollection
+}
+
+func GetClient() *mongo.Client {
+	return client
+}
+
+func Disconnect() error {
+	if client == nil {
+		return nil
+	}
+	return client.Disconnect(context.Background())
 }

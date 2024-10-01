@@ -1,6 +1,6 @@
-# Go MongoDB Todo API
+# Go MongoDB gRPC Todo Service
 
-This project is a RESTful API for a Todo application built with Go and MongoDB.
+This project is a gRPC-based Todo service built with Go and MongoDB.
 
 ## Features
 
@@ -8,13 +8,14 @@ This project is a RESTful API for a Todo application built with Go and MongoDB.
 - Search functionality
 - Pagination support
 - MongoDB integration
-- Environment variable configuration
+- gRPC API
 
 ## Prerequisites
 
 - Go 1.22.5 or later
 - MongoDB 4.2.16 or later
 - Docker and Docker Compose (for running MongoDB)
+- Protocol Buffers compiler (protoc)
 
 ## Setup
 
@@ -34,72 +35,92 @@ This project is a RESTful API for a Todo application built with Go and MongoDB.
    make up
    ```
 
-4. Build and run the application:
+4. Generate gRPC code:
    ```
-   make restart
+   make proto
    ```
 
-## API Endpoints
+5. Build and run the application:
+   ```
+   make build
+   make run
+   ```
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET    | /todos   | Get all todos |
-| GET    | /todos/{id} | Get a specific todo |
-| POST   | /todos   | Create a new todo |
-| PUT    | /todos/{id} | Update a todo |
-| DELETE | /todos/{id} | Delete a todo |
-| GET    | /search?q={query} | Search todos |
+## gRPC API
 
-For detailed API documentation, refer to the `api.http` file in the project root.
+The service exposes the following gRPC methods:
+
+- `CreateTodo`: Creates a new todo item
+- `GetTodo`: Retrieves a specific todo item by ID
+- `ListTodos`: Lists all todo items with pagination
+- `UpdateTodo`: Updates an existing todo item
+- `DeleteTodo`: Deletes a todo item
+- `SearchTodos`: Searches for todo items based on a query string
 
 ## Usage
 
-You can use curl, Postman, or any API client to interact with the endpoints. Here are some examples using curl:
+To interact with the gRPC service, you'll need a gRPC client. You can use tools like [grpcurl](https://github.com/fullstorydev/grpcurl) or create a custom client using the generated protobuf code.
+
+Here are some example commands using grpcurl:
 
 1. Create a new todo:
    ```
-   curl -X POST http://localhost:8080/todos \
-        -H "Content-Type: application/json" \
-        -d '{"title": "Learn Go", "completed": false}'
+   grpcurl -plaintext -d '{"title": "Learn gRPC", "completed": false}' localhost:50051 todo.TodoService/CreateTodo
    ```
 
-2. Get all todos:
+2. Get a todo by ID:
    ```
-   curl http://localhost:8080/todos
+   grpcurl -plaintext -d '{"id": "5f9f1b9b9c9d440000a1b1b1"}' localhost:50051 todo.TodoService/GetTodo
    ```
 
-3. Get a specific todo (replace {id} with an actual todo ID):
+3. List todos:
    ```
-   curl http://localhost:8080/todos/{id}
+   grpcurl -plaintext -d '{"page": 1, "limit": 10}' localhost:50051 todo.TodoService/ListTodos
    ```
 
 4. Update a todo:
    ```
-   curl -X PUT http://localhost:8080/todos/{id} \
-        -H "Content-Type: application/json" \
-        -d '{"title": "Learn Go Advanced", "completed": true}'
+   grpcurl -plaintext -d '{"id": "5f9f1b9b9c9d440000a1b1b1", "title": "Learn gRPC Advanced", "completed": true}' localhost:50051 todo.TodoService/UpdateTodo
    ```
 
 5. Delete a todo:
    ```
-   curl -X DELETE http://localhost:8080/todos/{id}
+   grpcurl -plaintext -d '{"id": "5f9f1b9b9c9d440000a1b1b1"}' localhost:50051 todo.TodoService/DeleteTodo
    ```
 
 6. Search todos:
    ```
-   curl http://localhost:8080/search?q=Go
+   grpcurl -plaintext -d '{"query": "gRPC"}' localhost:50051 todo.TodoService/SearchTodos
    ```
 
 ## Project Structure
 
-- `cmd/api/main.go`: Main application entry point.
-- `db/db.go`: Database connection setup.
-- `models/todo.go`: Todo model and validation.
-- `services/todo.go`: Service functions for CRUD operations.
-- `handlers/handlers.go`: HTTP handlers for API endpoints.
-- `api.http`: Postman collection for API testing.
-- `Makefile`: Convenient commands for Docker and application management.
+```
+.
+├── cmd
+│   └── server
+│       └── main.go
+├── pb
+│   └── todo.proto
+├── server
+│   └── todo_server.go
+├── db
+│   └── db.go
+├── models
+│   └── todo.go
+├── .env
+├── .gitignore
+├── docker-compose.yml
+├── go.mod
+├── Makefile
+└── README.md
+```
 
+- `cmd/server/main.go`: Main application entry point
+- `pb/todo.proto`: Protocol Buffers definition file
+- `server/todo_server.go`: gRPC server implementation
+- `db/db.go`: Database connection setup
+- `models/todo.go`: Todo model and validation
 
 ## Contributing
 
