@@ -1,0 +1,130 @@
+@baseUrl = http://localhost:8080
+
+### Create a new Todo
+POST {{baseUrl}}/todos
+Content-Type: application/json
+
+{
+    "title": "Learn Go",
+    "completed": false
+}
+
+### Sample response
+# HTTP/1.1 201 Created
+# Content-Type: application/json
+#
+# {
+#     "id": "5f9f1b9b9c9d440000a1b1b1",
+#     "title": "Learn Go",
+#     "completed": false,
+#     "created_at": "2023-10-02T12:00:00Z",
+#     "updated_at": "2023-10-02T12:00:00Z"
+# }
+
+### Get all Todos
+GET {{baseUrl}}/todos
+
+### Sample response
+# HTTP/1.1 200 OK
+# Content-Type: application/json
+#
+# [
+#     {
+#         "id": "5f9f1b9b9c9d440000a1b1b1",
+#         "title": "Learn Go",
+#         "completed": false,
+#         "created_at": "2023-10-02T12:00:00Z",
+#         "updated_at": "2023-10-02T12:00:00Z"
+#     },
+#     {
+#         "id": "5f9f1b9b9c9d440000a1b1b2",
+#         "title": "Build API",
+#         "completed": true,
+#         "created_at": "2023-10-01T10:00:00Z",
+#         "updated_at": "2023-10-02T09:00:00Z"
+#     }
+# ]
+
+### Get a specific Todo
+GET {{baseUrl}}/todos/5f9f1b9b9c9d440000a1b1b1
+
+### Sample response
+# HTTP/1.1 200 OK
+# Content-Type: application/json
+#
+# {
+#     "id": "5f9f1b9b9c9d440000a1b1b1",
+#     "title": "Learn Go",
+#     "completed": false,
+#     "created_at": "2023-10-02T12:00:00Z",
+#     "updated_at": "2023-10-02T12:00:00Z"
+# }
+
+### Update a Todo
+PUT {{baseUrl}}/todos/5f9f1b9b9c9d440000a1b1b1
+Content-Type: application/json
+
+{
+    "title": "Learn Go Advanced",
+    "completed": true
+}
+
+### Sample response
+# HTTP/1.1 200 OK
+# Content-Type: application/json
+#
+# {
+#     "id": "5f9f1b9b9c9d440000a1b1b1",
+#     "title": "Learn Go Advanced",
+#     "completed": true,
+#     "created_at": "2023-10-02T12:00:00Z",
+#     "updated_at": "2023-10-02T14:00:00Z"
+# }
+
+### Delete a Todo
+DELETE {{baseUrl}}/todos/5f9f1b9b9c9d440000a1b1b1
+
+### Sample response
+# HTTP/1.1 204 No Content
+
+### Search Todos
+GET {{baseUrl}}/search?q=Go
+
+### Sample response
+# HTTP/1.1 200 OK
+# Content-Type: application/json
+#
+# [
+#     {
+#         "id": "5f9f1b9b9c9d440000a1b1b1",
+#         "title": "Learn Go Advanced",
+#         "completed": true,
+#         "created_at": "2023-10-02T12:00:00Z",
+#         "updated_at": "2023-10-02T14:00:00Z"
+#     }
+# ]
+
+### Get Todos with pagination
+GET {{baseUrl}}/todos?limit=5&page=1
+
+### Sample response
+# HTTP/1.1 200 OK
+# Content-Type: application/json
+#
+# [
+#     {
+#         "id": "5f9f1b9b9c9d440000a1b1b1",
+#         "title": "Learn Go Advanced",
+#         "completed": true,
+#         "created_at": "2023-10-02T12:00:00Z",
+#         "updated_at": "2023-10-02T14:00:00Z"
+#     },
+#     {
+#         "id": "5f9f1b9b9c9d440000a1b1b2",
+#         "title": "Build API",
+#         "completed": true,
+#         "created_at": "2023-10-01T10:00:00Z",
+#         "updated_at": "2023-10-02T09:00:00Z"
+#     }
+#     // ... (up to 5 items)
+# ]

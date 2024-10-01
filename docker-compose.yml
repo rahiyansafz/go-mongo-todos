@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  mongo:
+    container_name: ${CONTAINER_NAME}
+    image: ${IMAGE_NAME}
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+
+
+
